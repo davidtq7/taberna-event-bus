@@ -1,0 +1,36 @@
+@startuml
+title Diagrama de secuencia - pedido y música en paralelo
+actor Cliente
+participant "Sistema de pedidos" as Pedidos
+participant EventBus as Bus
+participant Barra
+participant Cocina
+participant Banda
+participant "Sistema de sonido" as Sonido
+participant "Panel LED" as Panel
+participant "Sistema de humo" as Humo
+participant "Registro de servicio" as Servicio
+Cliente -> Pedidos : realizarPedido(mesa_5, pedido_123, items)
+Pedidos -> Bus : publicar(PedidoRealizadoEvent)
+Bus -> Barra : pedido
+Bus -> Cocina : pedido
+Bus -> Panel : pedido
+note over Barra,Cocina : Preparación programada en hilos distintos
+par Bebida, a los 2 s
+  Barra -> Bus : publicar(BebidaServidaEvent)
+  Bus -> Panel : bebida servida
+  Bus -> Servicio : bebida servida
+else Comida, a los 5 s
+  Cocina -> Bus : publicar(ComidaPreparadaEvent)
+  Bus -> Panel : plato listo
+  Bus -> Servicio : plato listo
+else Banda, cada 3 s
+  Banda -> Bus : publicar(BandaTocandoEvent)
+  Bus -> Sonido : canción
+  Bus -> Panel : canción
+  Bus -> Humo : canción
+  opt Through the Fire and Flames
+    Humo -> Humo : activar efectos
+  end
+end
+@enduml

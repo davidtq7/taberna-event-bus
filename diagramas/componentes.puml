@@ -1,0 +1,24 @@
+@startuml
+title Diagrama de componentes - comunicación por EventBus
+left to right direction
+skinparam componentStyle rectangle
+component "Sistema de pedidos" as Pedidos
+component "Barra" as Barra
+component "Cocina" as Cocina
+component "Banda" as Banda
+component "Sistema de sonido" as Sonido
+component "Panel LED" as Panel
+component "Sistema de humo" as Humo
+component "Registro de servicio" as Servicio
+component "EventBus" as Bus
+Pedidos --> Bus : PedidoRealizadoEvent
+Bus --> Barra : PedidoRealizadoEvent
+Bus --> Cocina : PedidoRealizadoEvent
+Barra --> Bus : BebidaServidaEvent
+Cocina --> Bus : ComidaPreparadaEvent
+Banda --> Bus : BandaTocandoEvent
+Bus --> Sonido : BandaTocandoEvent
+Bus --> Humo : BandaTocandoEvent
+Bus --> Panel : todos los eventos
+Bus --> Servicio : bebida y comida listas
+@enduml

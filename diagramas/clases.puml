@@ -1,0 +1,62 @@
+@startuml
+title Diagrama de clases - La Taberna del Bus de Eventos
+skinparam classAttributeIconSize 0
+hide empty members
+
+interface Evento
+class EventBus {
+  +suscribir(tipo, suscriptor)
+  +desuscribir(tipo, suscriptor): boolean
+  +publicar(evento)
+}
+enum TipoItem {
+  BEBIDA
+  COMIDA
+}
+class ItemPedido <<record>> {
+  nombre: String
+  tipo: TipoItem
+}
+class PedidoRealizadoEvent <<record>> {
+  mesaId: String
+  pedidoId: String
+  items: List<ItemPedido>
+}
+class BebidaServidaEvent <<record>> {
+  mesaId: String
+  bebida: String
+}
+class ComidaPreparadaEvent <<record>> {
+  pedidoId: String
+  plato: String
+}
+class BandaTocandoEvent <<record>> {
+  nombreBanda: String
+  nombreCancion: String
+  duracionSegundos: int
+}
+class SistemaDePedidos
+class Barra
+class Cocina
+class Banda
+class SistemaDeSonido
+class PanelLED
+class SistemaDeHumo
+class RegistroDeServicio
+
+PedidoRealizadoEvent ..|> Evento
+BebidaServidaEvent ..|> Evento
+ComidaPreparadaEvent ..|> Evento
+BandaTocandoEvent ..|> Evento
+PedidoRealizadoEvent *-- "1..*" ItemPedido
+ItemPedido --> TipoItem
+SistemaDePedidos --> EventBus : publica pedido
+Barra --> EventBus : escucha pedido / publica bebida
+Cocina --> EventBus : escucha pedido / publica comida
+Banda --> EventBus : publica canción
+SistemaDeSonido --> EventBus : escucha canción
+PanelLED --> EventBus : escucha Evento
+SistemaDeHumo --> EventBus : escucha canción
+RegistroDeServicio --> EventBus : escucha bebida / comida
+EventBus ..> Evento : distribuye
+@enduml
